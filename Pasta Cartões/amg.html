@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabénss, Isaaa! 🌌💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: #030303;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+            background-size: 350px 350px, 250px 250px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+            perspective: 1000px;
+        }
+
+        /* TELA INICIAL (CAPA) */
+        .capa {
+            text-align: center;
+            z-index: 200;
+            background: rgba(255, 20, 147, 0.1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 2px solid #ff1493;
+            box-shadow: 0 0 20px #ff1493, inset 0 0 20px #ff1493;
+            backdrop-filter: blur(10px);
+            max-width: 90%;
+            transition: opacity 0.6s ease;
+        }
+
+        .capa h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493;
+            margin-bottom: 15px;
+        }
+
+        .btn-universal {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: #ff1493;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff1493;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-universal:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ff1493;
+        }
+
+        /* PALCO DO UNIVERSO INTERATIVO */
+        .universo-container {
+            display: none;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            touch-action: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .sol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75px;
+            height: 75px;
+            background: #fffb00;
+            border-radius: 50%;
+            box-shadow: 0 0 35px #ffea00, 0 0 70px #ff9100;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .espaco-3d {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            will-change: transform;
+        }
+
+        .elemento-item {
+            position: absolute;
+            transform-style: preserve-3d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .conteudo-estabilizado {
+            transform-style: preserve-3d;
+            will-change: transform;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* AJUSTE QUADRADO ESTÁVEL */
+        .foto-quadrada {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            border: 2px solid #ff1493;
+            background-color: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px #ff1493;
+            border-radius: 12px;
+            pointer-events: none;
+            display: block;
+        }
+
+        .texto-neon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fff;
+            white-space: nowrap;
+            padding: 6px 14px;
+            background: rgba(5, 5, 5, 0.9);
+            border-radius: 20px;
+            border: 2px solid #ff1493;
+            text-shadow: 0 0 5px #ff1493;
+            box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+            pointer-events: none;
+        }
+
+        .coracao-neon {
+            font-size: 2.2rem;
+            text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493;
+            pointer-events: none;
+        }
+
+        /* BARRA DE NAVEGAÇÃO INFERIOR COESA */
+        .caixa-preview {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 320px;
+            z-index: 150;
+            text-align: center;
+        }
+
+        /* SEGUNDA FOLHA: CARTA CALMA */
+        .folha-carta {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.85);
+            width: 90%;
+            max-width: 480px;
+            background: linear-gradient(135deg, #150015 0%, #050505 100%);
+            border: 3px solid #ff1493;
+            box-shadow: 0 0 40px rgba(255, 20, 147, 0.5);
+            border-radius: 20px;
+            padding: 35px 25px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .folha-carta.abrir-calmo {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .folha-carta h2 {
+            font-size: 1.8rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff1493, 0 0 20px #ff1493;
+        }
+
+        .corpo-texto {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #f5f5f5;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ff1493;
+        }
+
+        /* PARTÍCULAS E EMOJIS */
+        .particula-festa {
+            position: fixed;
+            pointer-events: none;
+            z-index: 250;
+            animation: subirFesta linear forwards;
+        }
+
+        @keyframes subirFesta {
+            0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(60px) rotate(360deg); opacity: 0; }
+        }
+
+        .instrucao {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #ffb6c1;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 16px;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 150;
+            animation: piscar 2s infinite;
+        }
+
+        @keyframes piscar { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .foto-quadrada { width: 95px; height: 95px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="capa" id="capa">
+        <h1>Feliz Aniversário! 🎉💖</h1>
+        <p>Preparei uma surpresa interativa para você...</p>
+        <button class="btn-universal" onclick="abrirUniverso()">Clique aqui para abrir ✨</button>
+    </div>
+
+    <div class="universo-container" id="universo">
+        <div class="instrucao">Gire a galáxia com o dedo 👆🔄</div>
+        <div class="sol"></div>
+
+        <div class="espaco-3d" id="espaco">
+            <div class="elemento-item" data-u="0" data-v="5"><div class="conteudo-estabilizado texto-neon">Parabénss, Isaaa! Te amoo 🥳</div></div>
+            <div class="elemento-item" data-u="35" data-v="25"><img class="conteudo-estabilizado foto-quadrada" src="https://media.discordapp.net/attachments/1242178846040522784/1504997484060213248/3c81dc0d-64f7-42d7-8fcb-2aaa9968ca02.png?ex=6a0905a1&is=6a07b421&hm=ffb5848789515d1bf6c127598eb620af68a0d977aea3b7c19af7904dd66ca1f2&=&format=webp&quality=lossless&width=389&height=781"></div>
+            <div class="elemento-item" data-u="70" data-v="-15"><div class="conteudo-estabilizado coracao-neon">💖</div></div>
+            <div class="elemento-item" data-u="105" data-v="35"><div class="conteudo-estabilizado texto-neon">Vivaa! 🎉</div></div>
+            <div class="elemento-item" data-u="140" data-v="-25"><img class="conteudo-estabilizado foto-quadrada" src="https://media.discordapp.net/attachments/1242178846040522784/1504997484357750894/0d246aae-5644-4f7c-be46-77f24bcdcf40.png?ex=6a0905a1&is=6a07b421&hm=91ad33dc21f1d722e3b2ff5bf9bd64d63b6aac02da70fb6526733266a5c222de&=&format=webp&quality=lossless&width=1280&height=575"></div>
+            <div class="elemento-item" data-u="175" data-v="15"><div class="conteudo-estabilizado texto-neon">Te amoo 💕</div></div>
+            <div class="elemento-item" data-u="210" data-v="-40"><div class="conteudo-estabilizado coracao-neon">❤️</div></div>
+            <div class="elemento-item" data-u="245" data-v="30"><img class="conteudo-estabilizado foto-quadrada" src="https://media.discordapp.net/attachments/1242178846040522784/1504997484701945969/4be6bd44-1caa-4cee-b5fc-b442c0286a0a.png?ex=6a0905a1&is=6a07b421&hm=02deceded2d9bb436dee2353efbe0cd9107047def2ffd0621627dd2a87551165&=&format=webp&quality=lossless&width=1145&height=859"></div>
+            <div class="elemento-item" data-u="280" data-v="-20"><div class="conteudo-estabilizado texto-neon">Feliz aniversárioo 🌟</div></div>
+            <div class="elemento-item" data-u="315" data-v="40"><div class="conteudo-estabilizado texto-neon">Me encantas ✨</div></div>
+            <div class="elemento-item" data-u="350" data-v="-10"><img class="conteudo-estabilizado foto-quadrada" src="https://media.discordapp.net/attachments/1242178846040522784/1504997485049806888/0799a72d-15e3-4b38-b5fc-8d1ef85bd7ee.png?ex=6a0905a1&is=6a07b421&hm=8e160156c6a66d889254197235961101e8d12b58bbd26f28b065fe9243bded1c&=&format=webp&quality=lossless&width=1015&height=859"></div>
+            
+            <div class="elemento-item" data-u="15" data-v="-35"><div class="conteudo-estabilizado texto-neon">Minha dupla 🤍</div></div>
+            <div class="elemento-item" data-u="85" data-v="20"><div class="conteudo-estabilizado texto-neon">Melhor amiga, sim ou claro? 🤷‍♀️🔥</div></div>
+            <div class="elemento-item" data-u="155" data-v="45"><div class="conteudo-estabilizado texto-neon">Come meus lanches 🍔</div></div>
+            <div class="elemento-item" data-u="225" data-v="-30"><div class="conteudo-estabilizado texto-neon">Te amoo ♥️</div></div>
+        </div>
+
+        <div class="caixa-preview" id="previewBar">
+            <button class="btn-universal" onclick="irParaCarta()">Avançar ➜</button>
+        </div>
+    </div>
+
+    <div class="folha-carta" id="cartaFolha">
+        <h2>Parabéns Isaa 🎊 Te amoo 🤟!</h2>
+        <div class="corpo-texto">
+            <p><strong>Isa,</strong></p><br>
+            <p>Hoje é o seu dia e eu não poderia deixar de passar aqui para te desejar as melhores coisas do mundo! Obrigado por ser essa pessoa incrível, parceira e que está sempre comigo.</p><br>
+            <p>Que o seu novo ano seja cheio de sorrisos, conquistas, amor e momentos inesquecíveis. Você merece o mundo inteirinho!</p><br>
+            <p>Com muito carinho,</p>
+            <p><strong>Elias ❤️</strong></p>
+        </div>
+    </div>
+
+    <script>
+        let rotX = -10, rotY = 0;
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let loopUniverso;
+        let loopChuvaEspecial;
+        
+        const espaco = document.getElementById('espaco');
+        const items = document.querySelectorAll('.elemento-item');
+        const raio = window.innerWidth < 600 ? 150 : 270;
+
+        items.forEach(item => {
+            let u = parseFloat(item.getAttribute('data-u')) * (Math.PI / 180);
+            let v = parseFloat(item.getAttribute('data-v')) * (Math.PI / 180);
+            let x = raio * Math.cos(v) * Math.sin(u);
+            let y = raio * Math.sin(v);
+            let z = raio * Math.cos(v) * Math.cos(u);
+            item.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+        });
+
+        function abrirUniverso() {
+            document.getElementById('capa').style.display = 'none';
+            const universo = document.getElementById('universo');
+            universo.style.display = 'block';
+            setTimeout(() => { universo.style.opacity = '1'; }, 50);
+            
+            loopUniverso = setInterval(() => {
+                if (!isDragging) {
+                    rotY += 0.25;
+                    atualizarRotacao();
+                }
+            }, 30);
+        }
+
+        function atualizarRotacao() {
+            espaco.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+            items.forEach(item => {
+                const c = item.querySelector('.conteudo-estabilizado');
+                if (c) c.style.transform = `rotateY(${-rotY}deg) rotateX(${-rotX}deg)`;
+            });
+        }
+
+        function irParaCarta() {
+            clearInterval(loopUniverso);
+            const universo = document.getElementById('universo');
+            universo.style.opacity = '0';
+            
+            setTimeout(() => {
+                universo.style.display = 'none';
+                const carta = document.getElementById('cartaFolha');
+                carta.style.display = 'block';
+                
+                setTimeout(() => {
+                    carta.classList.add('abrir-calmo');
+                    loopChuvaEspecial = setInterval(criarParticulaEspecial, 120);
+                }, 100);
+            }, 800);
+        }
+
+        // CONTROLES INTERATIVOS
+        const container = document.getElementById('universo');
+        function iniciar(x, y) { isDragging = true; startX = x; startY = y; }
+        function mover(x, y) {
+            if (!isDragging) return;
+            let dX = x - startX; let dY = y - startY;
+            startX = x; startY = y;
+            rotY += dX * 0.4; rotX -= dY * 0.4;
+            rotX = Math.max(-75, Math.min(75, rotX));
+            atualizarRotacao();
+        }
+        container.addEventListener('mousedown', (e) => iniciar(e.clientX, e.clientY));
+        container.addEventListener('mousemove', (e) => mover(e.clientX, e.clientY));
+        window.addEventListener('mouseup', () => isDragging = false);
+        container.addEventListener('touchstart', (e) => iniciar(e.touches[0].clientX, e.touches[0].clientY));
+        container.addEventListener('touchmove', (e) => mover(e.touches[0].clientX, e.touches[0].clientY));
+        container.addEventListener('touchend', () => isDragging = false);
+
+        function criarParticulaEspecial() {
+            const colecao = ['💖', '❤️', '🐱', '🐈', '🎊', '🎉', '✨', '🐾', '🎈'];
+            const p = document.createElement('div');
+            p.classList.add('particula-festa');
+            p.innerText = colecao[Math.floor(Math.random() * colecao.length)];
+            
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = '100vh';
+            p.style.fontSize = Math.random() * (30 - 18) + 18 + 'px';
+            p.style.animationDuration = Math.random() * (4.5 - 2.5) + 2.5 + 's';
+            
+            document.body.appendChild(p);
+            setTimeout(() => { p.remove(); }, 4500);
+        }
+    </script>
+</body>
+</html>
